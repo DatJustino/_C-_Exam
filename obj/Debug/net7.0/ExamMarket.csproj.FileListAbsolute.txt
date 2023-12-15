@@ -1,0 +1,14 @@
+C:\Users\super\VScodeRepos\_C#Market\ExamMarket\bin\Debug\net7.0\ExamMarket.exe
+C:\Users\super\VScodeRepos\_C#Market\ExamMarket\bin\Debug\net7.0\ExamMarket.deps.json
+C:\Users\super\VScodeRepos\_C#Market\ExamMarket\bin\Debug\net7.0\ExamMarket.runtimeconfig.json
+C:\Users\super\VScodeRepos\_C#Market\ExamMarket\bin\Debug\net7.0\ExamMarket.dll
+C:\Users\super\VScodeRepos\_C#Market\ExamMarket\bin\Debug\net7.0\ExamMarket.pdb
+C:\Users\super\VScodeRepos\_C#Market\ExamMarket\obj\Debug\net7.0\ExamMarket.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\super\VScodeRepos\_C#Market\ExamMarket\obj\Debug\net7.0\ExamMarket.AssemblyInfoInputs.cache
+C:\Users\super\VScodeRepos\_C#Market\ExamMarket\obj\Debug\net7.0\ExamMarket.AssemblyInfo.cs
+C:\Users\super\VScodeRepos\_C#Market\ExamMarket\obj\Debug\net7.0\ExamMarket.csproj.CoreCompileInputs.cache
+C:\Users\super\VScodeRepos\_C#Market\ExamMarket\obj\Debug\net7.0\ExamMarket.dll
+C:\Users\super\VScodeRepos\_C#Market\ExamMarket\obj\Debug\net7.0\refint\ExamMarket.dll
+C:\Users\super\VScodeRepos\_C#Market\ExamMarket\obj\Debug\net7.0\ExamMarket.pdb
+C:\Users\super\VScodeRepos\_C#Market\ExamMarket\obj\Debug\net7.0\ExamMarket.genruntimeconfig.cache
+C:\Users\super\VScodeRepos\_C#Market\ExamMarket\obj\Debug\net7.0\ref\ExamMarket.dll
