@@ -1,58 +1,66 @@
 ﻿using System;
-class Program
+using ExamMarket;
+
+namespace ExamMarket
 {
-    
-    static void Main(string[] args)
+    class Program
     {
-        var scanner = new Scanner();
-        var basicCalculator = new BasicPriceCalculator();
-        var advancedCalculator = new AdvancedPriceCalculator();
-
-        scanner.ItemScanned += basicCalculator.OnItemScanned;
-        scanner.ItemScanned += advancedCalculator.OnItemScanned;
-
-        Console.WriteLine("Welcome to the Supermarket Checkout System.");
-        Console.WriteLine("Available items:");
-        foreach (var item in ItemRepository.Items)
+        static void Main(string[] args)
         {
-            Console.WriteLine($"Code: {item.Key}, Price: {item.Value.Price:C2}");
-        }
-        Console.WriteLine("Please scan an item by entering its code (A-Z), or type 'exit' to finish.");
+            IItemRepository itemRepository = new ItemRepository();
+            var scanner = new Scanner();
+            var basicCalculator = new BasicPriceCalculator(itemRepository);
+            var advancedCalculator = new AdvancedPriceCalculator(itemRepository);
 
-        while (true)
-        {
-            Console.Write("Scan item (Y/N): ");
-            string? input = Console.ReadLine();
-            if (input?.Equals("exit", StringComparison.OrdinalIgnoreCase) == true)
+            scanner.ItemScanned += basicCalculator.OnItemScanned;
+            scanner.ItemScanned += advancedCalculator.OnItemScanned;
+
+            Console.WriteLine("Welcome to the Supermarket Checkout System.");
+            Console.WriteLine("Available products:");
+
+            foreach (var item in itemRepository.GetAllItems())
             {
-                Console.Write("Are you sure you want to check out? (Y/N): ");
-                string? checkoutInput = Console.ReadLine();
-                if (checkoutInput?.Equals("Y", StringComparison.OrdinalIgnoreCase) == true)
+                string promoText = item.Promotion != null ? $" - Promotion: {item.Promotion.GetDescription()}" : "";
+                Console.WriteLine($"Code: {item.Code}, {item.Name} from {item.Brand} - Price: {item.Price:C2}{promoText}");
+            }
+            Console.WriteLine("Please scan a product by entering its code (A-Z), or type 'exit' to finish.");
+
+            while (true)
+            {
+                Console.Write("Scan item: ");
+                string input = Console.ReadLine()?.Trim() ?? "";
+
+                if (input.Equals("exit", StringComparison.OrdinalIgnoreCase))
                 {
-                    break;
+                    Console.Write("Are you sure you want to check out? (Y/N): ");
+                    if (Console.ReadLine()?.Trim().Equals("Y", StringComparison.OrdinalIgnoreCase) == true)
+                    {
+                        break;
+                    }
                 }
-            }
-            else if (input?.Equals("N", StringComparison.OrdinalIgnoreCase) == true)
-            {
-                continue;
-            }
-
-            if (input.Length == 1 && char.IsLetter(input[0]) && ItemRepository.Items.TryGetValue(char.ToUpper(input[0]), out Item? itemToScan))
-            {
-                if (itemToScan != null)
+                else if (!string.IsNullOrEmpty(input) && input.Length == 1 && char.IsLetter(input[0]))
                 {
-                    scanner.ScanItem(itemToScan);
+                    char itemCode = char.ToUpper(input[0]);
+                    Item itemToScan = itemRepository.GetItem(itemCode);
+                    if (itemToScan != null)
+                    {
+                        scanner.ScanItem(itemToScan);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Product does not exist. Please try again.");
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("Invalid input or item does not exist. Please enter a single letter representing an item or 'exit' to finish.");
+                    Console.WriteLine("Invalid input. Please enter a single letter representing an item or 'exit' to finish.");
                 }
             }
-        }
 
-        Console.WriteLine("Final Summary:");
-        basicCalculator.PrintReceipt();
-        advancedCalculator.PrintReceipt();
-        Console.WriteLine("Checkout complete. Have a great day!");
+            Console.WriteLine("Final Summary:");
+            basicCalculator.PrintReceipt();
+            advancedCalculator.PrintReceipt();
+            Console.WriteLine("Checkout complete. Have a great day!");
+        }
     }
 }
