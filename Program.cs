@@ -1,5 +1,7 @@
-﻿class Program
+﻿using System;
+class Program
 {
+    
     static void Main(string[] args)
     {
         var scanner = new Scanner();
@@ -19,12 +21,20 @@
 
         while (true)
         {
-            Console.Write("Scan item: ");
-            string input = Console.ReadLine();
-
-            if (input.Equals("exit", StringComparison.OrdinalIgnoreCase))
+            Console.Write("Scan item (Y/N): ");
+            string? input = Console.ReadLine();
+            if (input?.Equals("exit", StringComparison.OrdinalIgnoreCase) == true)
             {
-                break;
+                Console.Write("Are you sure you want to check out? (Y/N): ");
+                string? checkoutInput = Console.ReadLine();
+                if (checkoutInput?.Equals("Y", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    break;
+                }
+            }
+            else if (input?.Equals("N", StringComparison.OrdinalIgnoreCase) == true)
+            {
+                continue;
             }
 
             if (input.Length == 1 && char.IsLetter(input[0]) && ItemRepository.Items.TryGetValue(char.ToUpper(input[0]), out Item? itemToScan))
@@ -39,10 +49,10 @@
                 }
             }
         }
-            Console.WriteLine("Final Summary:");
-            basicCalculator.PrintReceipt();
-            advancedCalculator.PrintReceipt();
-            Console.WriteLine("Checkout complete. Have a great day!");
-        
+
+        Console.WriteLine("Final Summary:");
+        basicCalculator.PrintReceipt();
+        advancedCalculator.PrintReceipt();
+        Console.WriteLine("Checkout complete. Have a great day!");
     }
 }

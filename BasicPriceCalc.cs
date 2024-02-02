@@ -4,15 +4,16 @@ using System.Collections.Generic;
 public class BasicPriceCalculator
 {
     public double Total { get; private set; }
-    private Dictionary<char, int> itemCounts = new Dictionary<char, int>();
+    private Dictionary<char, int> itemCounts = new();
 
-    private double CalculateTotalPrice()
+ 
+ private double CalculateTotalPrice()
     {
         double totalPrice = 0;
         foreach (var itemCode in itemCounts.Keys)
         {
             var item = ItemRepository.Items[itemCode];
-            double itemPrice = CalculateItemPrice(item);
+            double itemPrice = CalculateItemPrice(item, itemCounts[itemCode]);
             totalPrice += itemPrice;
         }
         return totalPrice;
@@ -26,80 +27,41 @@ public class BasicPriceCalculator
         }
         itemCounts[item.Code]++;
 
-        double itemPrice = CalculateItemPrice(item);
-        Total += itemPrice;
+        Total = CalculateTotalPrice();  // Update total
 
-        Console.WriteLine($"Item {item.Code} scanned: {itemPrice:C2}. New total: {Total:C2}");
+        Console.WriteLine($"Item {item.Code} scanned. \nNew total: {Total:C2}");
     }
 
-    private double CalculateItemPrice(Item item)
+
+    private double CalculateItemPrice(Item item, int itemCount)
     {
+        double price = 0;
         if (item.Promotion != null)
         {
-            if (itemCounts[item.Code] >= item.Promotion.RequiredQuantity)
-            {
-                return ApplyPromotion(item);
-            }
-            else
-            {
-                return item.Price;
-            }
+            price += ApplyPromotion(item, itemCount);
         }
         else if (item.IsMultipack)
         {
-            if (itemCounts[item.Code] >= item.MultipackQuantity)
-            {
-            ApplyMultipackDiscount(1);
-                return item.Price * item.MultipackQuantity;
-            }
-            else
-            {
-                return 0; // No additional cost until the next full set is scanned
-            }
+            int sets = itemCount / item.MultipackQuantity;
+            int singles = itemCount % item.MultipackQuantity;
+
+            price += sets * item.Price * item.MultipackQuantity + singles * item.Price;
         }
         else
         {
-            return item.Price; // Regular price for a single item
+            price += item.Price * itemCount;
         }
+        return price;
     }
-private double ApplyPromotion(Item item)
-{
-    double price = item.Price;
-    int itemCount = itemCounts[item.Code];
-
-    double fullPrice = itemCount * price;
-
-    int setsOfPromotionItems = itemCount / item.Promotion.RequiredQuantity;
-
-    double totalDiscount = setsOfPromotionItems * item.Promotion.DiscountAmount;
-
-    double discountedPrice = fullPrice - totalDiscount;
-
-    itemCount -= setsOfPromotionItems * item.Promotion.RequiredQuantity;
-    itemCounts[item.Code] = itemCount;
-
-    // Apply the multipack discount to the remaining items, if any
-    if (itemCount > 0 && item.IsMultipack)
+    
+    private double ApplyPromotion(Item item, int itemCount)
     {
-        ApplyMultipackDiscount(itemCount);
+        int setsOfPromotionItems = itemCount / item.Promotion.RequiredQuantity;
+        double discountedPrice = setsOfPromotionItems * (item.Price * item.Promotion.RequiredQuantity - item.Promotion.DiscountAmount);
+        int remainingItems = itemCount % item.Promotion.RequiredQuantity;
+
+        return discountedPrice + remainingItems * item.Price;
     }
-
-    return discountedPrice;
-}
-
-
-private void ApplyMultipackDiscount(int remainingCount)
-{
-    // Remove the multipack discount from the item count and adjust the total price
-    if (remainingCount > 0)
-    {
-        var item = ItemRepository.Items[itemCounts.First().Key];
-        itemCounts[itemCounts.First().Key] = remainingCount;
-
-        double multipackPrice = item.Price * item.MultipackQuantity;
-        Total -= multipackPrice;
-    }
-}
 
     public void PrintReceipt()
     {
@@ -107,3 +69,5 @@ private void ApplyMultipackDiscount(int remainingCount)
         Console.WriteLine($"Total: {Total:C2}");
     }
 }
+
+   

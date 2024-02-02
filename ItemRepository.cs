@@ -1,6 +1,6 @@
 public static class ItemRepository
 {
-    public static Dictionary<char, Item> Items = new Dictionary<char, Item>
+    public static Dictionary<char, Item> Items = new()
     {
         { 'A', new Item { Code = 'A', Group = 1, Price = 100.00 } },
         { 'B', new Item { Code = 'B', Group = 1, Price = 200.00, IsMultipack = true, MultipackQuantity = 3 } },

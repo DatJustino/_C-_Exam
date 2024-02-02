@@ -4,9 +4,9 @@ public class Promotion
 
     public enum PromotionType
     {
-        DiscountAmount, // Direct discount off the total
-        BuyXGetYFree, // Buy a certain amount and get some free
-        SpecialPrice // Special price for a certain quantity
+        DiscountAmount,
+        BuyXGetYFree, 
+        SpecialPrice 
     }
 
     public PromotionType Type { get; set; }
